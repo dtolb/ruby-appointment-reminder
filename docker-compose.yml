@@ -9,5 +9,14 @@ services:
             - DATABASE_URL=mongodb://mongo/db
         ports:
             - "$PORT:3000"
+    scheduler:
+        build: .
+        depends_on:
+            - mongo
+        env_file: .env
+        environment:
+            - DATABASE_URL=mongodb://mongo/db
+        command: ruby reminder_scheduler.rb
+
     mongo:
         image: mongo
