@@ -3,14 +3,16 @@ Bundler.require
 
 require "rack/moneta_store"
 
-require "./websocket_backend"
+require "./phone_number_backend"
 require "./database_backend"
 require "./helper"
 
-class CallTrackingApp < Sinatra::Base
+class AppointmentReminderApp < Sinatra::Base
+  enable :sessions
   use Rack::PostBodyContentTypeParser
   use Rack::MonetaStore, :File, :dir => File.join(Dir.tmpdir(), ".cache")
   use DatabaseBackend
+  use PhoneNumberBackend
 
   set :public_dir, File.join(File.dirname(__FILE__), "public")
 
