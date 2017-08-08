@@ -12,11 +12,14 @@ def get_user_by_number(env, number)
   number = number.gsub(/([\s()-])/g, "");
   number = "+1#{number}" if number.length == 10
   number = "+#{number}" unless number.first == "+"
-  get_from_cache env, "user:#{number}", lambda {
-    db["User"].find({phoneNumber: number}, {limit: 1}).first
-  }
+  db["User"].find({phoneNumber: number}, {limit: 1}).first
 end
 
 def get_bandwidth_api()
   Bandwidth::Client.new(ENV["BANDWIDTH_USER_ID"], ENV["BANDWIDTH_API_TOKEN"], ENV["BANDWIDTH_API_SECRET"])
+end
+
+def prepare_time(time)
+  t = Time.parse(time)
+  Time.mktime(t.year, t.month, t.day, t.hour, t.min)
 end
