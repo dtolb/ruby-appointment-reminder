@@ -25,7 +25,7 @@ class AppointmentReminderApp < Sinatra::Base
     db = env["database"]
     params["_id"] = BSON::ObjectId.new(),
     db["User"].insert_one(params)
-    send_verification_code(params["phoneNumber"])
+    send_verification_code(env, params["phoneNumber"])
     ""
   end
 
