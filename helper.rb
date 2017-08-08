@@ -16,3 +16,7 @@ def get_user_by_number(env, number)
     db["User"].find({phoneNumber: number}, {limit: 1}).first
   }
 end
+
+def get_bandwidth_api()
+  Bandwidth::Client.new(ENV["BANDWIDTH_USER_ID"], ENV["BANDWIDTH_API_TOKEN"], ENV["BANDWIDTH_API_SECRET"])
+end
