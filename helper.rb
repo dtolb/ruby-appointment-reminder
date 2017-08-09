@@ -1,3 +1,5 @@
+require "date"
+
 Mongo::Logger.logger.level = ::Logger::FATAL
 
 
@@ -46,7 +48,7 @@ end
 
 def prepare_time(time)
   t = Time.parse(time)
-  Time.mktime(t.year, t.month, t.day, t.hour, t.min)
+  DateTime.new(t.year, t.month, t.day, t.hour, t.min)
 end
 
 def get_service_phone_number(env)

@@ -3,22 +3,25 @@ Bundler.require
 
 require "rack/moneta_store"
 require "sinatra/json"
+require "sinatra/cookies"
 
-require "./phone_number_backend"
 require "./database_backend"
 require "./host_backend"
 require "./helper"
 require "byebug"
 
 class AppointmentReminderApp < Sinatra::Base
-  enable :sessions
+  helpers Sinatra::Cookies
   use Rack::PostBodyContentTypeParser
   use Rack::MonetaStore, :File, :dir => File.join(Dir.tmpdir(), ".cache")
   use DatabaseBackend
-  use PhoneNumberBackend
   use HostBackend
 
   set :public_dir, File.join(File.dirname(__FILE__), "public")
+
+  before "/*" do
+    env["user"] = get_user_by_number(env, cookies["user_phone_number"])
+  end
 
   get "/" do
     redirect "/index.html"
@@ -30,7 +33,6 @@ class AppointmentReminderApp < Sinatra::Base
     db = env["database"]
     params["_id"] = BSON::ObjectId.new()
     params.delete("inProgress")
-    byebug
     db["User"].insert_one(params)
     send_verification_code(env, params["phoneNumber"])
     ""
@@ -39,7 +41,7 @@ class AppointmentReminderApp < Sinatra::Base
   post "/login" do
     user = get_user_by_number(env, params["phoneNumber"])
     raise "User with this number is not registered yet" unless user
-    send_verification_code(user["phoneNumber"])
+    send_verification_code(env, user["phoneNumber"])
     ""
   end
 
@@ -50,14 +52,15 @@ class AppointmentReminderApp < Sinatra::Base
     user.delete("verificationCode")
     db = env["database"]
     db["User"].update_one({_id: user["_id"]}, {"$set" => {verificationCode: nil}})
-    session[:user_phone_number] = user["phoneNumber"]
+    byebug
+    cookies["user_phone_number"] = user["phoneNumber"]
     user["id"] = user["_id"].to_s()
     user.delete("_id")
     json user
   end
 
   post "/logout" do
-    session.delete(:user_phone_number)
+    cookies.delete("user_phone_number")
     ""
   end
 
@@ -76,17 +79,18 @@ class AppointmentReminderApp < Sinatra::Base
   end
 
   before "/reminder*" do
-    halt 401 unless env[:user]
+    halt 401 unless env["user"]
   end
 
   get "/reminder" do
-    byebug
     db = env["database"]
     user = env["user"]
     reminders = db["Reminder"].find({user: user["_id"]}, {sort: {"createdAt" => -1}})
-    reminders.to_a.map do |i|
+    reminders = reminders.to_a.map do |i|
       i["id"] = i["_id"].to_s()
+      i.delete("_id")
     end
+    json reminders
   end
 
   post "/reminder" do
@@ -94,23 +98,25 @@ class AppointmentReminderApp < Sinatra::Base
     user = env["user"]
     params["time"] = prepare_time(params["time"])
     params["user"] = user["_id"]
-    params["createdAt"] = Time.now()
+    params["createdAt"] = DateTime.now()
+    params["_id"] = BSON::ObjectId.new()
     db["Reminder"].insert_one(params)
     params["id"] = params["_id"].to_s()
-    params
+    params.delete("_id")
+    json params
   end
 
   post "/reminder/:id/enabled" do
     db = env["database"]
     user = env["user"]
-    db["Reminder"].update({_id: params["id"], user: user["_id"]}, {"$set" => {enabled: params["enabled"] == "true"}})
+    db["Reminder"].update_one({_id: params["id"], user: user["_id"]}, {"$set" => {enabled: params["enabled"] == "true"}})
     ""
   end
 
   delete "/reminder/:id" do
     db = env["database"]
     user = env["user"]
-    db["Reminder"].remove({_id: params["id"], user: user["_id"]})
+    db["Reminder"].delete_one({_id: params["id"], user: user["_id"]})
     ""
   end
 
