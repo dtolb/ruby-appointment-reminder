@@ -34,7 +34,7 @@ end
 
 def get_user_by_number(env, number)
   db = env["database"]
-  number = number.gsub(/([\s()-])/g, "");
+  number = number.gsub(/([\s()-])/, "");
   number = "+1#{number}" if number.length == 10
   number = "+#{number}" unless number.first == "+"
   db["User"].find({phoneNumber: number}, {limit: 1}).first

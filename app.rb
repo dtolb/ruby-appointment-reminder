@@ -3,7 +3,6 @@ Bundler.require
 
 require "rack/moneta_store"
 
-require "./authentificated_backend"
 require "./phone_number_backend"
 require "./database_backend"
 require "./host_backend"
@@ -67,40 +66,42 @@ class AppointmentReminderApp < Sinatra::Base
     ""
   end
 
-  map "/reminder" do
-    use AuthentificatedBackend
+  before "/reminder*" do
+    halt 401 unless env[:user]
+  end
 
-    get "/" do
-      db = env["database"]
-      user = env["user"]
-      db["Reminder"].find({user: user["_id"]}, {sort: {"createdAt" => -1}}).map do |i|
-        i["id"] = i["_id"].to_s()
-      end
-    end
-
-    post "/" do
-      db = env["database"]
-      user = env["user"]
-      params["time"] = prepare_time(params["time"])
-      params["user"] = user["_id"]
-      params["createdAt"] = Time.now()
-      db["Reminder"].insert_one(params)
-      params["id"] = params["_id"].to_s()
-      params
-    end
-
-    post "/:id/enabled" do
-      db = env["database"]
-      user = env["user"]
-      db["Reminder"].update({_id: params["id"], user: user["_id"]}, {"$set" => {enabled: params["enabled"] == "true"}})
-      ""
-    end
-
-    delete "/:id" do
-      db = env["database"]
-      user = env["user"]
-      db["Reminder"].remove({_id: params["id"], user: user["_id"]})
-      ""
+  get "/reminder" do
+    db = env["database"]
+    user = env["user"]
+    reminders = db["Reminder"].find({user: user["_id"]}, {sort: {"createdAt" => -1}})
+    reminders.to_a.map do |i|
+      i["id"] = i["_id"].to_s()
     end
   end
+
+  post "/reminder" do
+    db = env["database"]
+    user = env["user"]
+    params["time"] = prepare_time(params["time"])
+    params["user"] = user["_id"]
+    params["createdAt"] = Time.now()
+    db["Reminder"].insert_one(params)
+    params["id"] = params["_id"].to_s()
+    params
+  end
+
+  post "/reminder/:id/enabled" do
+    db = env["database"]
+    user = env["user"]
+    db["Reminder"].update({_id: params["id"], user: user["_id"]}, {"$set" => {enabled: params["enabled"] == "true"}})
+    ""
+  end
+
+  delete "/reminder/:id" do
+    db = env["database"]
+    user = env["user"]
+    db["Reminder"].remove({_id: params["id"], user: user["_id"]})
+    ""
+  end
+
 end
