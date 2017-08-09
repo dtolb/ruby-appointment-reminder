@@ -52,9 +52,9 @@ end
 def get_service_phone_number(env)
   api = get_bandwidth_api()
   get_from_cache env, "servicePhoneNumber", lambda {
-    existingNumber = Bandwidth::PhoneNumber. list(api, {name: "Appointment Reminder Service Number"}).first
+    existingNumber = Bandwidth::PhoneNumber.list(api, {name: "Appointment Reminder Service Number"}).first
     return existingNumber[:number] if existingNumber
-    number = Bandwidth::AvailableNumber.search_local(api, {areaCode: ENV["AREA_CODE"] || "910", quantity: 1}).first["number"]
+    number = Bandwidth::AvailableNumber.search_local(api, {areaCode: ENV["AREA_CODE"] || "910", quantity: 1}).first[:number]
     Bandwidth::PhoneNumber.create(api, {number: number, name: "Appointment Reminder Service Number"})
     number
   }
@@ -67,7 +67,8 @@ def send_verification_code(env, number)
   user = get_user_by_number(env, number)
   return unless user
   code = (rand.rand(9000) + 1000).to_s()
-  Bandwidth::Message.create(api, {from: get_service_phone_number(), to: user["phoneNumber"], text: "Your verification code: #{code}"})
+  p code
+  Bandwidth::Message.create(api, {from: get_service_phone_number(env), to: user["phoneNumber"], text: "Your verification code: #{code}"})
   db = env["database"]
-  db["User"].update({_id: user["_id"]}, {"$set" => {verificationCode: code}})
+  db["User"].update_one({_id: user["_id"]}, {"$set" => {verificationCode: code}})
 end

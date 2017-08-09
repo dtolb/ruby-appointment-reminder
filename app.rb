@@ -2,11 +2,13 @@ require "bundler"
 Bundler.require
 
 require "rack/moneta_store"
+require "sinatra/json"
 
 require "./phone_number_backend"
 require "./database_backend"
 require "./host_backend"
 require "./helper"
+require "byebug"
 
 class AppointmentReminderApp < Sinatra::Base
   enable :sessions
@@ -26,7 +28,9 @@ class AppointmentReminderApp < Sinatra::Base
     user = get_user_by_number(env, params["phoneNumber"])
     raise "User with this number is registered already" if user
     db = env["database"]
-    params["_id"] = BSON::ObjectId.new(),
+    params["_id"] = BSON::ObjectId.new()
+    params.delete("inProgress")
+    byebug
     db["User"].insert_one(params)
     send_verification_code(env, params["phoneNumber"])
     ""
@@ -45,9 +49,10 @@ class AppointmentReminderApp < Sinatra::Base
     raise "Invalid verification code" if !params["code"] || user["verificationCode"] != params["code"]
     user.delete("verificationCode")
     db = env["database"]
-    db["User"].update({_id: user["_id"]}, {"$set" => {verificationCode: nil}})
+    db["User"].update_one({_id: user["_id"]}, {"$set" => {verificationCode: nil}})
     session[:user_phone_number] = user["phoneNumber"]
     user["id"] = user["_id"].to_s()
+    user.delete("_id")
     json user
   end
 
@@ -75,6 +80,7 @@ class AppointmentReminderApp < Sinatra::Base
   end
 
   get "/reminder" do
+    byebug
     db = env["database"]
     user = env["user"]
     reminders = db["Reminder"].find({user: user["_id"]}, {sort: {"createdAt" => -1}})
