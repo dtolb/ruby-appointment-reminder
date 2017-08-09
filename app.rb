@@ -18,6 +18,10 @@ class AppointmentReminderApp < Sinatra::Base
 
   set :public_dir, File.join(File.dirname(__FILE__), "public")
 
+  get "/" do
+    redirect "/index.html"
+  end
+
   post "/register" do
     user = get_user_by_number(env, params["phoneNumber"])
     raise "User with this number is registered already" if user
