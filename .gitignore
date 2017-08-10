@@ -60,3 +60,4 @@ typings/
 public
 .env
 .byebug_history
+package-lock.json
