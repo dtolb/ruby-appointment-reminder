@@ -108,16 +108,17 @@ class AppointmentReminderApp < Sinatra::Base
     params["completed"] = false
     params["createdAt"] = DateTime.now()
     params["_id"] = BSON::ObjectId.new()
+    params.delete("inProgress")
     db["Reminder"].insert_one(params)
     params["id"] = params["_id"].to_s()
     params.delete("_id")
+    params["user"] = params["user"].to_s()
     json params
   end
 
   post "/reminder/:id/enabled" do
     db = env["database"]
     user = env["user"]
-    p ({_id: BSON::ObjectId.from_string(params["id"]), user: user["_id"]})
     db["Reminder"].update_one({_id: BSON::ObjectId.from_string(params["id"]), user: user["_id"]}, {"$set" => {enabled: params["enabled"] == "true"}})
     ""
   end
