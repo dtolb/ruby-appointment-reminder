@@ -8,7 +8,8 @@
     "dev:server": "bundle exec puma -p 5000",
     "dev": "npm-run-all --parallel dev:*",
     "webpack": "webpack -d",
-    "build": "webpack -p --env=prod"
+    "build": "webpack -p --env=prod",
+    "postinstall": "npm run build"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
