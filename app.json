@@ -11,10 +11,10 @@
   "addons": ["mongolab:sandbox"],
   "buildpacks": [
     {
-      "url": "heroku/ruby"
+      "url": "https://github.com/heroku/heroku-buildpack-ruby"
     },
     {
-      "url": "heroku/node"
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs"
     }
   ],
   "env": {
