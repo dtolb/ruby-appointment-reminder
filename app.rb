@@ -18,9 +18,15 @@ class AppointmentReminderApp < Sinatra::Base
   use HostBackend
 
   set :public_dir, File.join(File.dirname(__FILE__), "public")
+  set :show_exceptions, false
 
   before "/*" do
     env["user"] = get_user_by_number(env, cookies["user_phone_number"])
+  end
+
+  error do
+    e = env["sinatra.error"]
+    json({error: e.message.strip()})
   end
 
   get "/" do
@@ -52,7 +58,6 @@ class AppointmentReminderApp < Sinatra::Base
     user.delete("verificationCode")
     db = env["database"]
     db["User"].update_one({_id: user["_id"]}, {"$set" => {verificationCode: nil}})
-    byebug
     cookies["user_phone_number"] = user["phoneNumber"]
     user["id"] = user["_id"].to_s()
     user.delete("_id")
@@ -89,6 +94,7 @@ class AppointmentReminderApp < Sinatra::Base
     reminders = reminders.to_a.map do |i|
       i["id"] = i["_id"].to_s()
       i.delete("_id")
+      i
     end
     json reminders
   end
@@ -98,6 +104,8 @@ class AppointmentReminderApp < Sinatra::Base
     user = env["user"]
     params["time"] = prepare_time(params["time"])
     params["user"] = user["_id"]
+    params["enabled"] = true
+    params["completed"] = false
     params["createdAt"] = DateTime.now()
     params["_id"] = BSON::ObjectId.new()
     db["Reminder"].insert_one(params)
@@ -109,14 +117,15 @@ class AppointmentReminderApp < Sinatra::Base
   post "/reminder/:id/enabled" do
     db = env["database"]
     user = env["user"]
-    db["Reminder"].update_one({_id: params["id"], user: user["_id"]}, {"$set" => {enabled: params["enabled"] == "true"}})
+    p ({_id: BSON::ObjectId.from_string(params["id"]), user: user["_id"]})
+    db["Reminder"].update_one({_id: BSON::ObjectId.from_string(params["id"]), user: user["_id"]}, {"$set" => {enabled: params["enabled"] == "true"}})
     ""
   end
 
   delete "/reminder/:id" do
     db = env["database"]
     user = env["user"]
-    db["Reminder"].delete_one({_id: params["id"], user: user["_id"]})
+    db["Reminder"].delete_one({_id: BSON::ObjectId.from_string(params["id"]), user: user["_id"]})
     ""
   end
 

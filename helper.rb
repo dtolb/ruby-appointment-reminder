@@ -69,7 +69,6 @@ def send_verification_code(env, number)
   user = get_user_by_number(env, number)
   return unless user
   code = (rand.rand(9000) + 1000).to_s()
-  p code
   Bandwidth::Message.create(api, {from: get_service_phone_number(env), to: user["phoneNumber"], text: "Your verification code: #{code}"})
   db = env["database"]
   db["User"].update_one({_id: user["_id"]}, {"$set" => {verificationCode: code}})
