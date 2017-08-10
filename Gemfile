@@ -11,10 +11,8 @@ gem "i18n"
 gem "moneta"
 gem "mongo"
 gem "rake"
+gem "rspec"
+gem "rspec-mocks"
 
 gem "byebug", :group => :development
 
-group :test do
-  gem 'rspec'
-  gem 'rspec-mocks'
-end
