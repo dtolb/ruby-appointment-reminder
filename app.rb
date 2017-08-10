@@ -8,7 +8,6 @@ require "sinatra/cookies"
 require "./database_backend"
 require "./host_backend"
 require "./helper"
-require "byebug"
 
 class AppointmentReminderApp < Sinatra::Base
   helpers Sinatra::Cookies

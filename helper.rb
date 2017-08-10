@@ -15,22 +15,20 @@ end
 def get_db(env)
   url = ENV["DATABASE_URL"] || ENV["MONGODB_URI"] || "mongodb://localhost/appointment-reminder"
   db = Mongo::Client.new(url)
-  if env
-    get_from_cache env, "db:#{url}", lambda {
-      # Call only once
-      db["User"].indexes().create_many([
-        { key: { name: 1 }},
-        { key: { phoneNumber: 1 }}
-      ])
-      db["Reminder"].indexes().create_many([
-        { key: { name: 1 }},
-        { key: { createdAt: -1 }},
-        { key: { enabled: 1 }},
-        { key: { user: 1 }}
-      ])
-      url
-    }
-  end
+  get_from_cache env, "db:#{url}", lambda {
+    # Call only once
+    db["User"].indexes().create_many([
+      { key: { name: 1 }},
+      { key: { phoneNumber: 1 }}
+    ])
+    db["Reminder"].indexes().create_many([
+      { key: { name: 1 }},
+      { key: { createdAt: -1 }},
+      { key: { enabled: 1 }},
+      { key: { user: 1 }}
+    ])
+    url
+  }
   db
 end
 
