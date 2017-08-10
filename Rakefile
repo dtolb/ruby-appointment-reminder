@@ -4,7 +4,7 @@ RSpec::Core::RakeTask.new(:spec)
 task :test => :spec
 
 task :build do
-  `npm install && npm run build`
+  `yarn install && yarn run build`
 end
 
 task :web do
