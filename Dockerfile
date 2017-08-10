@@ -1,7 +1,7 @@
 FROM node:8 as frontend
 WORKDIR /src
 ADD . /src
-RUN yarn install
+RUN yarn install && rm -rf node_modules
 
 FROM ruby:2.4
 WORKDIR /app
