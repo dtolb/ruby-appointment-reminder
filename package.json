@@ -1,11 +1,11 @@
 {
-  "name": "AppointmentReminder",
+  "name": "ruby-appointment-reminder",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "dev:frontend-server": "webpack-dev-server -d -w",
-    "dev:server": "cross-env ASPNETCORE_URLS=http://+:5000 dotnet run",
+    "dev:server": "bundle exec puma -p 5000",
     "dev": "npm-run-all --parallel dev:*",
     "webpack": "webpack -d",
     "build": "webpack -p --env=prod"
