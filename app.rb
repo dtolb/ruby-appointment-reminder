@@ -77,7 +77,7 @@ class AppointmentReminderApp < Sinatra::Base
         when "speak" then call.hangup() if params["status"] == "done"
       end
     rescue => exception
-      put exception
+      puts exception
     end
     ""
   end
