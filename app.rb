@@ -63,11 +63,6 @@ class AppointmentReminderApp < Sinatra::Base
     json user
   end
 
-  post "/logout" do
-    cookies.delete("user_phone_number")
-    ""
-  end
-
   post "/bandwidth/call-callback" do
     api = get_bandwidth_api()
     call = Bandwidth::Call.new({id: params["callId"]}, api)
