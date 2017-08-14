@@ -18,8 +18,8 @@ end
 
 def create_db()
   {
-    "Call" => double("CallCollection"),
-    "PhoneNumber" => double("PhoneNumberCollection")
+    "User" => double("UserCollection"),
+    "Reminder" => double("ReminderCollection")
   }
 end
 

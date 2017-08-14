@@ -1,4 +1,5 @@
 require "date"
+require "byebug"
 
 Mongo::Logger.logger.level = ::Logger::FATAL
 

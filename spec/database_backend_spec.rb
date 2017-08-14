@@ -23,6 +23,5 @@ describe DatabaseBackend do
     env = create_env()
     backend = DatabaseBackend.new(create_app())
     backend.call(env)
-    backend.call(env)
   end
 end
