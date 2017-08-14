@@ -19,7 +19,8 @@ end
 def create_db()
   {
     "User" => double("UserCollection"),
-    "Reminder" => double("ReminderCollection")
+    "Reminder" => double("ReminderCollection"),
+    "HostData" => double("HostDataCollection")
   }
 end
 
