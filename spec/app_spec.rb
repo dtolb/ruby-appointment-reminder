@@ -59,4 +59,18 @@ describe AppointmentReminderApp do
       @make_post_request.call("/bandwidth/call-callback", {callId: "callId", eventType: "speak", status: "done"})
     end
   end
+
+  describe "GET /reminder" do
+    it "should return reminders " do
+      allow(@db["Reminder"]).to receive(:find).with({user: "id"}, {sort: {"createdAt" => -1}}).and_return([{}])
+      env = create_env({"database" => @db})
+      allow(@db["User"]).to receive(:find).with(any_args()).and_return [{"_id" => "id"}]
+      app = AppointmentReminderApp.new()
+      env = Rack::MockRequest.env_for("/reminder", {method: "GET"}).merge(env)
+      r = app.call(env)
+      expect(JSON.parse(r[2][0]).length).to eql(1)
+    end
+  end
+
+
 end
