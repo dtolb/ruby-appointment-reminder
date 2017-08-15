@@ -52,11 +52,13 @@ def send_scheduled_notifications()
   end
 end
 
-loop do
-  begin
-    send_scheduled_notifications()
-  rescue => exception
-    put exception
+if caller.length == 0
+  loop do
+    begin
+      send_scheduled_notifications()
+    rescue => exception
+      put exception
+    end
+    sleep 60
   end
-  sleep 60
 end

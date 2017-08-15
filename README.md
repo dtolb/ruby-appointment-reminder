@@ -34,7 +34,7 @@ export BANDWIDTH_API_TOKEN=<YOUR-API-TOKEN>
 export BANDWIDTH_API_SECRET=<YOUR-API-SECRET>
 rake build # to install dependencies
 
-rake # to start web app
+PORT=8080 rake # to start web app
 
 # then open external access to this app (for example via ngrok)
 # ngrok http 8080
