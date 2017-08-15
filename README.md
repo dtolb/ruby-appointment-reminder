@@ -10,6 +10,7 @@ Bandwidth Voice  API Sample App for Call Tracking, see http://ap.bandwidth.com/
 - [Bandwidth Account](https://catapult.inetwork.com/pages/signup.jsf/?utm_medium=social&utm_source=github&utm_campaign=dtolb&utm_content=_)
 - [Ruby 2.4+](https://www.ruby-lang.org)
 - [NodeJS 8+](https://nodejs.org/en/)
+- [Yarn](https://yarnpkg.com/)
 - [Git](https://git-scm.com/)
 
 
@@ -29,12 +30,18 @@ Bandwidth Voice  API Sample App for Call Tracking, see http://ap.bandwidth.com/
 ### Directly
 
 ```bash
+# install node js (https://nodejs.org/en/) and yarn (https://yarnpkg.com/)
+# install or run mongodb. Set environment variable DATABASE_URL to right value for your mongodb instance
+
+bundle install # to install gems
+
 export BANDWIDTH_USER_ID=<YOUR-USER-ID>
 export BANDWIDTH_API_TOKEN=<YOUR-API-TOKEN>
 export BANDWIDTH_API_SECRET=<YOUR-API-SECRET>
-rake build # to install dependencies
 
-PORT=8080 rake # to start web app
+rake build # to build frontend
+
+PORT=8080 rake # to start web app and sheduler
 
 # then open external access to this app (for example via ngrok)
 # ngrok http 8080
