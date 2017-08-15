@@ -37,7 +37,8 @@ describe AppointmentReminderApp do
 
   describe "POST /login" do
     it "should send notification with code" do
-      @make_post_request.call("/login", {phoneNumber: "+1234567891"})
+      allow(@db["User"]).to receive(:find).with({phoneNumber: "+11234567891"}, {limit: 1}).and_return [{"_id" => "id"}]
+      @make_post_request.call("/login", {phoneNumber: "+11234567891"})
     end
   end
 
