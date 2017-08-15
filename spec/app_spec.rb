@@ -44,7 +44,7 @@ describe AppointmentReminderApp do
 
   describe "POST /verify-code" do
     it "should check verification code" do
-      allow(@db["User"]).to receive(:find).with({phoneNumber: "+11234567892"}, {limit: 1}).and_return [{"_id" => "id"}]
+      allow(@db["User"]).to receive(:find).with({phoneNumber: "+11234567892"}, {limit: 1}).and_return [{"_id" => "id", "verificationCode" => "1000"}]
       allow(@db["User"]).to receive(:update_one).with({_id: "id"}, {"$set" => {verificationCode: nil}})
       @make_post_request.call("/verify-code", {phoneNumber: "+11234567892", code: "1000"})
     end
