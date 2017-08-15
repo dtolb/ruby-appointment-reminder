@@ -7,6 +7,9 @@ describe AppointmentReminderApp do
     allow(@db["HostData"]).to receive(:update_one).with(any_args())
     allow(@db["User"]).to receive(:find).with({phoneNumber: "+1234567891"}, {limit: 1}).and_return [{"phoneNumber" => "+1234567891", "verificationCode" => "1000", "_id" => "id"}]
     allow(@db["User"]).to receive(:find).with(any_args()).and_return []
+    ENV["BANDWIDTH_USER_ID"] = "userId"
+    ENV["BANDWIDTH_API_TOKEN"] = "token"
+    ENV["BANDWIDTH_API_SECRET"] = "secret"
     @make_post_request = Proc.new do |path, data|
       env = create_env({"database" => @db})
       app = AppointmentReminderApp.new()
