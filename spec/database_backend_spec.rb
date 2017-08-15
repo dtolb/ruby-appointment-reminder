@@ -1,13 +1,17 @@
 describe DatabaseBackend do
+  before :each do
+    double("Mongo::Client")
+  end
+
   it "should return return database instance" do
-    cache = {"db:mongodb://localhost/appointment-reminder" => {}}
+    allow(Mongo::Client).to receive(:new) { {} }
+    cache = {"db:#{ENV["DATABASE_URL"] || "mongodb://localhost/appointment-reminder"}" => {}}
     env = create_env({}, cache)
     backend = DatabaseBackend.new(create_app())
     backend.call(env)
     expect(env["database"]).not_to be_nil
   end
   it "should create indexes" do
-    double("Mongo::Client")
     get_mock_collection = Proc.new do |name|
       indexes = double("#{name}Indexes")
       c = double("#{name}Collection")

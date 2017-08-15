@@ -14,7 +14,9 @@ describe "get_from_cache" do
 end
 describe "get_db" do
   it "should return database instance" do
-    cache = {"db:mongodb://localhost/appointment-reminder" => {}}
+    double("Mongo::Client")
+    cache = {"db:#{ENV["DATABASE_URL"] || "mongodb://localhost/appointment-reminder"}" => {}}
+    allow(Mongo::Client).to receive(:new) { {} }
     env = create_env({}, cache)
     db = get_db(env)
     expect(db).not_to be_nil
