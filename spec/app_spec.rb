@@ -72,5 +72,37 @@ describe AppointmentReminderApp do
     end
   end
 
+  describe "POST /reminder" do
+    it "should create a reminder" do
+      allow(@db["User"]).to receive(:find).with(any_args()).and_return [{"_id" => "id"}]
+      allow(@db["Reminder"]).to receive(:insert_one).with(anything())
+      r = @make_post_request.call("/reminder", {name: "test", time: "2017-08-15T12:00:00Z"})
+      expect(JSON.parse(r[2][0])["name"]).to eql("test")
+    end
+  end
+
+  describe "POST /reminder/:id/enabled" do
+    it "should switch flag enabled" do
+      allow(@db["User"]).to receive(:find).with(any_args()).and_return [{"_id" => "id"}]
+      id = BSON::ObjectId.new()
+      allow(@db["Reminder"]).to receive(:update_one).with({_id: id, user: "id"}, {"$set" => {enabled: true}})
+      r = @make_post_request.call("/reminder/#{id.to_s}/enabled", {enabled: "true"})
+      expect(r[2][0]).to eql("")
+    end
+  end
+
+  describe "DELETE /reminder/:id" do
+    it "should remove user's reminder" do
+      allow(@db["User"]).to receive(:find).with(any_args()).and_return [{"_id" => "id"}]
+      id = BSON::ObjectId.new()
+      allow(@db["Reminder"]).to receive(:delete_one).with({_id: id, user: "id"})
+      env = create_env({"database" => @db})
+      app = AppointmentReminderApp.new()
+      env = Rack::MockRequest.env_for("/reminder/#{id.to_s}", {method: "DELETE"}).merge(env)
+      r = app.call(env)
+      expect(r[2][0]).to eql("")
+    end
+  end
+
 
 end
