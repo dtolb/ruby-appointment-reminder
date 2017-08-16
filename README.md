@@ -10,8 +10,10 @@ Appointment reminders app for [Bandwidth Voice and Messaging APIs](http://dev.ba
 
 * [What this Example Does](#what-this-example-does)
 * [Prerequisites](#prerequisites)
+    *[Env Variables](#env-variables)
 * [Deploy Locally](#deploying-locally-with-ngrok)
-* [Deploy to _service_](#deploy-heroku-or-azure)
+    * [Directly](#directly)
+    * [Docker](#via-docker)
 
 ## What this Example Does
 
