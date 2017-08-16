@@ -61,3 +61,5 @@ public
 .env
 .byebug_history
 package-lock.json
+
+.DS_Store
