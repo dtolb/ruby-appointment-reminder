@@ -50,6 +50,10 @@ class AppointmentReminderApp < Sinatra::Base
     ""
   end
 
+  post "/logout" do
+    cookies["user_phone_number"] = nil
+  end
+
   post "/verify-code" do
     user = get_user_by_number(env, params["phoneNumber"])
     raise "User with this number is not registered yet" unless user
