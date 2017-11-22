@@ -1,10 +1,15 @@
+<div align="center">
+
 # Appointment Reminder Ruby Example
 
-[![Build Status](https://travis-ci.org/BandwidthExamples/ruby-appointment-reminder.svg?branch=master)](https://travis-ci.org/BandwidthExamples/ruby-appointment-reminder)
+<a href="http://dev.bandwidth.com"><img src="https://s3.amazonaws.com/bwdemos/BW_Voice_Messaging.png"/></a>
+</div>
 
 Appointment reminders app for [Bandwidth Voice and Messaging APIs](http://dev.bandwidth.com).
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+[![Build Status](https://travis-ci.org/BandwidthExamples/ruby-appointment-reminder.svg?branch=master)](https://travis-ci.org/BandwidthExamples/ruby-appointment-reminder)
 
 ## Table of Contents
 
