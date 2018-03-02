@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-ruby "2.4.1"
+ruby "2.5.0"
 
 gem "sinatra"
 gem "sinatra-contrib"
@@ -13,6 +13,7 @@ gem "mongo"
 gem "rake"
 gem "rspec"
 gem "rspec-mocks"
+gem "activesupport", "~> 4.1.11"
 
 gem "byebug", :group => :development
 
