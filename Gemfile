@@ -1,9 +1,9 @@
 source "https://rubygems.org"
 ruby "2.5.0"
 
-gem "sinatra"
+gem "sinatra", ">= 2.0.2"
 gem "sinatra-contrib"
-gem "rack"
+gem "rack", ">= 2.0.6"
 gem "rack-contrib"
 gem "ruby-bandwidth"
 gem "puma"
